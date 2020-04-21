@@ -34,7 +34,7 @@ export default class Repository extends Component {
     const { match } = this.props;
     const repoName = decodeURIComponent(match.params.repository);
 
-    /*const [repository, issues] = await Promise.all([
+    const [repository, issues] = await Promise.all([
       api.get(`/repos/${repoName}`),
       api.get(`repos/${repoName}/issues`),
       {
@@ -49,7 +49,7 @@ export default class Repository extends Component {
       repository: repository.data,
       issues: issues.data,
       loading: false,
-    });*/
+    });
   }
 
   getIssues = async (page) => {
