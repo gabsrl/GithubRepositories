@@ -78,3 +78,7 @@ export const List = styled.ul`
     }
   }
 `;
+
+export const Error = styled.span`
+  color: red;
+`;

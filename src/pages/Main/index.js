@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import api from '../../services/api';
 import Container from '../../components/Container';
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, Error } from './styles';
 
 export default class Main extends Component {
   state = {
@@ -12,6 +12,7 @@ export default class Main extends Component {
     repositories: [],
     loading: false,
     error: false,
+    newRepoDuplicated: false,
   };
 
   componentDidMount() {
@@ -34,52 +35,57 @@ export default class Main extends Component {
 
   repoIsDuplicated = (repo) => {
     const { repositories } = this.state;
-    if (repositories.some((repository) => repository.name === repo)) {
-      throw new Error('Repositório duplicado');
-    } else {
-      return false;
-    }
+    return repositories.some((repository) => repository.name === repo);
   };
 
   handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       this.setState({ loading: true });
       const { newRepo, repositories } = this.state;
-      this.repoIsDuplicated(newRepo);
+      if (repositories.some((repository) => repository.name === newRepo)) {
+        this.setState({ newRepoDuplicated: true });
+      } else {
+        const responseRepositories = await api.get(`repos/${newRepo}`);
+        const data = {
+          name: responseRepositories.data.full_name,
+        };
 
-      const responseRepositories = await api.get(`repos/${newRepo}`);
-      console.log(responseRepositories);
-
-      const data = {
-        name: responseRepositories.data.full_name,
-      };
-
-      this.setState({
-        repositories: [...repositories, data],
-        newRepo: '',
-        loading: false,
-        error: false,
-      });
+        this.setState({
+          repositories: [...repositories, data],
+          error: false,
+        });
+      }
     } catch (err) {
       this.setState({
+        error: true,
+        newRepoDuplicated: false,
+      });
+    } finally {
+      this.setState({
         newRepo: '',
         loading: false,
-        error: true,
       });
-      console.log(err.message);
     }
   };
 
   render() {
-    const { loading, repositories, newRepo, error } = this.state;
+    const {
+      loading,
+      repositories,
+      newRepo,
+      error,
+      newRepoDuplicated,
+    } = this.state;
+
     return (
       <Container>
         <h1>
           <FaGithubAlt />
           Repositórios
         </h1>
-        <Form onSubmit={this.handleSubmit} error={error}>
+        <Form onSubmit={this.handleSubmit} error={error || newRepoDuplicated}>
           <input
             value={newRepo}
             placeholder="Adicionar repositório"
@@ -94,6 +100,9 @@ export default class Main extends Component {
             )}
           </SubmitButton>
         </Form>
+
+        {newRepoDuplicated && <Error>Repositório duplicado.</Error>}
+        {error && <Error>Repositório não encontrado.</Error>}
 
         <List>
           {repositories.map((repository) => (
