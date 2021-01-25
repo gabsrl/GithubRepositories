@@ -3,6 +3,12 @@ Project created  with [Create React App](https://github.com/facebook/create-reac
 ## About the project
 An interface made with ReactJS to display some information from the public Github API.
 
+## Scope
+- ReactJS
+- Styled Components
+- Flexbox Layout
+- API Requests
+
 ## Start the project
 
 In the project directory, you can run:
