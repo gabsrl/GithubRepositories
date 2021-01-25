@@ -2,6 +2,9 @@ Project created  with [Create React App](https://github.com/facebook/create-reac
 
 ## About the project
 An interface made with ReactJS to display some information from the public Github API.
+![github-app-home](https://raw.githubusercontent.com/gabsrl/GithubRepositories/master/public/githubrepo-app-home.png)
+
+![github-app-detail](https://raw.githubusercontent.com/gabsrl/GithubRepositories/master/public/githuprepo-app-info.png)
 
 ## Scope
 - ReactJS
